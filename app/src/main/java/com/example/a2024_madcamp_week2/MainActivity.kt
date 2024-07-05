@@ -1,5 +1,6 @@
 package com.example.a2024_madcamp_week2
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Base64
@@ -17,6 +18,8 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.user.UserApiClient
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +31,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 카카오 로그인 정보 확인
+        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+            if (error != null) {
+                // 로그인 안된 경우 LoginActivity로 이동
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else if (tokenInfo != null) {
+                // 로그인 된 경우 MyPageActivity로 이동
+                val intent = Intent(this@MainActivity, MyPageActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
 
         val keyHash=Utility.getKeyHash(this)
         Log.d("Hash",keyHash)
@@ -44,8 +62,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        getHashKey()
     }
 
     private fun getHashKey() {
