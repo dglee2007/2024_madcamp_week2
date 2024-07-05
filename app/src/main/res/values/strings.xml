@@ -4,4 +4,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="kakao_app_key">b0fce2ef6cde839710cbaff0835b2c44</string>
+    <string name="nickname_placeholder">닉네임: %1$s</string>
 </resources>

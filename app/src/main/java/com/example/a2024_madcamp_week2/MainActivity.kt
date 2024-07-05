@@ -6,12 +6,16 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.example.a2024_madcamp_week2.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+
+import com.example.a2024_madcamp_week2.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.findNavController
+
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import java.security.MessageDigest
@@ -41,9 +45,8 @@ class MainActivity : AppCompatActivity() {
                 finish()
             } else if (tokenInfo != null) {
                 // 로그인 된 경우 MyPageActivity로 이동
-                val intent = Intent(this@MainActivity, MyPageActivity::class.java)
-                startActivity(intent)
-                finish()
+                val navController = findNavController(R.id.nav_host_fragment_activity_main)
+                navController.navigate(R.id.navigation_home)
             }
         }
 

@@ -24,6 +24,11 @@
             </intent-filter>
         </activity>
 
+        <!-- LoginActivity 추가 -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true" />
+
         <!-- Kakao AuthCodeHandlerActivity -->
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.a2024_madcamp_week2.databinding.FragmentLoginBinding
 import com.kakao.sdk.auth.AuthApiClient
-import com.kakao.sdk.auth.AuthApiClient.instance
+//import com.kakao.sdk.auth.AuthApiClient.instance
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.kakao.sdk.user.UserApiClient.instance
+//import com.kakao.sdk.user.UserApiClient.instance
 import com.kakao.sdk.user.model.User
 
 class LoginFragment : Fragment() {
@@ -36,7 +36,7 @@ class LoginFragment : Fragment() {
         setKakaoCallback()
 
         binding.loginButton.setOnClickListener {
-            btnKakaoLogin(it)
+            btnKakaoLogin()
         }
     }
 
@@ -75,11 +75,14 @@ class LoginFragment : Fragment() {
             }
             else if (token != null) {
                 Log.d("[카카오로그인]","로그인에 성공하였습니다.\n${token.accessToken}")
-                UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                UserApiClient.instance.accessTokenInfo { tokenInfo, _ ->
                     if (tokenInfo != null) {
-                        UserApiClient.instance.me { user, error ->
+                        UserApiClient.instance.me { user, _ ->
                             if (user != null) {
-                                binding.nickname.text = "닉네임: ${user.kakaoAccount?.profile?.nickname}"
+                                val nickname = user.kakaoAccount?.profile?.nickname
+                                binding.nickname.text = getString(R.string.nickname_placeholder, nickname)
+                                binding.nickname.visibility = View.VISIBLE
+
                             }
                         }
                     }
@@ -91,7 +94,7 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun btnKakaoLogin(view: View) {
+    private fun btnKakaoLogin() {
         // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
             UserApiClient.instance.loginWithKakaoTalk(requireActivity(), callback = kakaoCallback)
