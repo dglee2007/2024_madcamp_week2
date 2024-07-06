@@ -21,6 +21,8 @@ import java.security.MessageDigest
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 
+import android.widget.Button
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         // getHashKey() 호출
         getHashKey()
+
     }
 
     private fun setupNavigation() {

@@ -33,6 +33,11 @@
             android:name=".LoginActivity"
             android:exported="true" />
 
+        <!-- LogoutActivity 추가 -->
+        <activity
+            android:name=".LogoutActivity"
+            android:exported="true" />
+
         <!-- Kakao AuthCodeHandlerActivity -->
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

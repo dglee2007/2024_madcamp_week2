@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.a2024_madcamp_week2.databinding.FragmentMypageBinding
+import android.widget.Button
+import com.example.a2024_madcamp_week2.LogoutActivity
+import android.content.Intent
+
 
 class MypageFragment : Fragment() {
 
@@ -31,6 +35,12 @@ class MypageFragment : Fragment() {
         val textView: TextView = binding.textMypage
         mypageViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
+        }
+
+        val logoutButton: Button = binding.logoutButton
+        logoutButton.setOnClickListener {
+            val intent = Intent(activity, LogoutActivity::class.java)
+            startActivity(intent)
         }
         return root
     }
