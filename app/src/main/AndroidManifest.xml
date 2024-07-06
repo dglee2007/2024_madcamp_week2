@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <meta-data
+        android:name="com.kakao.sdk.AppKey"
+        android:value="@string/kakao_app_key" />
+
     <application
         android:name=".utility.GlobalApplication"
         android:allowBackup="true"
@@ -39,7 +43,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:host="oauth"
-                    android:scheme="kakaob0fce2ef6cde839710cbaff0835b2c44" />
+                    android:scheme="kakaob0fce2ef6cde839710cbaff0835b2c44"
+                    />
             </intent-filter>
         </activity>
     </application>

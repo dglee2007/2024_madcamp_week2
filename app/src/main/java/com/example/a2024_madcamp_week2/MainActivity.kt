@@ -14,12 +14,9 @@ import androidx.navigation.ui.setupWithNavController
 
 import com.example.a2024_madcamp_week2.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.navigation.findNavController
 
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 
 import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
@@ -44,15 +41,18 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else if (tokenInfo != null) {
-                // 로그인 된 경우 MyPageActivity로 이동
-                val navController = findNavController(R.id.nav_host_fragment_activity_main)
-                navController.navigate(R.id.navigation_home)
+                setupNavigation()
             }
         }
 
-        val keyHash=Utility.getKeyHash(this)
-        Log.d("Hash",keyHash)
+        val keyHash = Utility.getKeyHash(this)
+        Log.d("Hash", keyHash)
 
+        // getHashKey() 호출
+        getHashKey()
+    }
+
+    private fun setupNavigation() {
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -72,12 +72,14 @@ class MainActivity : AppCompatActivity() {
             val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
             } else {
+                @Suppress("DEPRECATION")
                 packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
             }
 
             val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 packageInfo.signingInfo.apkContentsSigners
             } else {
+                @Suppress("DEPRECATION")
                 packageInfo.signatures
             }
 
