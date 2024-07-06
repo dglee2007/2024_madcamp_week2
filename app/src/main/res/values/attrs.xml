@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 기존 속성이 있다면 여기에 추가 -->
+    <attr name="exampleColor" format="color" />
+</resources>
