@@ -63,4 +63,19 @@ dependencies {
     implementation("com.kakao.sdk:v2-navi:2.20.3") // 카카오내비 API 모듈
     implementation("com.kakao.sdk:v2-cert:2.20.3") // 카카오톡 인증 서비스 API 모듈
     implementation("com.kakao.sdk:v2-auth:2.8.6")
+
+    //retrofit2
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+    //okhttp3
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:okhttp-urlconnection:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.8.0")
+
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
+    implementation("io.socket:socket.io-client:2.0.0")
 }
