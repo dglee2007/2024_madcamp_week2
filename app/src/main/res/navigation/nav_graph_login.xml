@@ -7,6 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_login"
-        android:name="com.example.a2024_madcamp_week2.LoginFragment"
-        tools:layout="@layout/fragment_login" />
+        android:name="com.example.a2024_madcamp_week2.ui.home.HomeFragment"
+        tools:layout="@layout/activity_login" />
 </navigation>
+

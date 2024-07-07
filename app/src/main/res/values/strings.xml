@@ -3,6 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_mypage">My Page</string>
     <string name="kakao_app_key">b0fce2ef6cde839710cbaff0835b2c44</string>
-    <string name="nickname_placeholder">닉네임: %1$s</string>
+    <string name="nickname_text">닉네임: %1$s</string>
+    <string name="kakao_login_button_description">카카오 로그인 버튼</string>
 </resources>
