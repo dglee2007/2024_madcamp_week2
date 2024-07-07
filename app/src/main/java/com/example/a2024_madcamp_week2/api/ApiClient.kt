@@ -14,7 +14,7 @@ import javax.net.ssl.SSLSocketFactory
 
 object ApiClient {
     const val BASE_URL =
-        "https://:3000"
+        "http://143.248.226.63:3000"
 
     //HTTP 통신시 통신 정보를 인터셉트하여 로그로 출력
     private val okHttpClient = OkHttpClient.Builder()
@@ -41,28 +41,28 @@ object ApiClient {
         return getRetrofit().create(service)
     }
 
-//    fun tls(){
-//        val host = "example.com"
-//        val port = 443 // TLS 포트
-//
-//        try {
-//            // SSL 소켓 팩토리를 생성하여 TLS 연결을 설정합니다.
-//            val sslSocketFactory = SSLSocketFactory.getDefault()
-//            val socket = sslSocketFactory.createSocket(host, port) as Socket
-//
-//            // 입력 및 출력 스트림을 설정합니다.
-//            val inputStream: InputStream = socket.getInputStream()
-//            val outputStream: OutputStream = socket.getOutputStream()
-//
-//            // 데이터를 전송하고 받는 코드를 여기에 작성합니다.
-//            // 예를 들어, outputStream를 사용하여 데이터를 서버로 전송하고
-//            // inputStream를 사용하여 서버에서 데이터를 읽을 수 있습니다.
-//
-//            // 연결을 닫을 때, 소켓을 닫아 리소스를 정리합니다.
-//            socket.close()
-//        } catch (e: IOException) {
-//            // TLS 연결 오류 처리
-//            e.printStackTrace()
-//        }
-//    }
+    fun tls(){
+        val host = "example.com"
+        val port = 443 // TLS 포트
+
+        try {
+            // SSL 소켓 팩토리를 생성하여 TLS 연결을 설정합니다.
+            val sslSocketFactory = SSLSocketFactory.getDefault()
+            val socket = sslSocketFactory.createSocket(host, port) as Socket
+
+            // 입력 및 출력 스트림을 설정합니다.
+            val inputStream: InputStream = socket.getInputStream()
+            val outputStream: OutputStream = socket.getOutputStream()
+
+            // 데이터를 전송하고 받는 코드를 여기에 작성합니다.
+            // 예를 들어, outputStream를 사용하여 데이터를 서버로 전송하고
+            // inputStream를 사용하여 서버에서 데이터를 읽을 수 있습니다.
+
+            // 연결을 닫을 때, 소켓을 닫아 리소스를 정리합니다.
+            socket.close()
+        } catch (e: IOException) {
+            // TLS 연결 오류 처리
+            e.printStackTrace()
+        }
+    }
 }
