@@ -4,61 +4,78 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.kakao.sdk.auth.AuthApiClient
+import com.example.a2024_madcamp_week2.api.LoginRequest
+import com.example.a2024_madcamp_week2.api.LoginResponse
+import com.example.a2024_madcamp_week2.api.LoginService
+import com.example.a2024_madcamp_week2.utility.saveUserIdToSharedPreferences
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.kakao.sdk.user.model.User
-//import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
+    private lateinit var name: String
+    private lateinit var accessToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        setKakaoCallback()
-
         // 버튼 클릭 리스너 추가
         val kakaoLoginButton: ImageButton = findViewById(R.id.btn_kakao_login)
         kakaoLoginButton.setOnClickListener {
-            // 카카오톡 실행 가능 여부 확인
+            //카카오톡 설치되어있는지 확인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
-                // 가능하다면 카카오톡으로 로그인하기
+                // 카카오톡 로그인
                 UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                    // 로그인 실패 부분
                     if (error != null) {
-                        Toast.makeText(this, "카카오톡으로 로그인 실패!", Toast.LENGTH_SHORT).show()
-                        Log.e("test", "카카오톡으로 로그인 실패! ${error.message}")
-
-                        // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
-                        // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
-                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                        Log.e("로그인", "로그인 실패 $error")
+                        // 사용자가 취소
+                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled ) {
                             return@loginWithKakaoTalk
                         }
-
-                        // 카카오톡으로 로그인 실패 시 카카오계정으로 로그인 시도
-                        UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
-                    } else if (token != null) {
-                        Toast.makeText(this, "카카오톡으로 로그인 성공!", Toast.LENGTH_SHORT).show()
-                        Log.d("test", "카카오톡으로 로그인 성공! ${token.accessToken}")
-
-                        // 로그인 성공 시 메인 화면으로 이동
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        // 다른 오류
+                        else {
+                            UserApiClient.instance.loginWithKakaoAccount(this, callback = mCallback)
+                        }
+                    }
+                    // 로그인 성공 부분
+                    else if (token != null) {
+                        Log.e("로그인", "로그인 성공 ${token.accessToken}")
+                        makeToast(token.accessToken)
                     }
                 }
             } else {
-                // 카카오톡이 설치되어 있지 않으면 카카오계정으로 로그인
-                UserApiClient.instance.loginWithKakaoAccount(this, callback = kakaoCallback)
+                //카카오 이메일 로그인
+                UserApiClient.instance.loginWithKakaoAccount(this){ token, error ->
+                    // 로그인 실패 부분
+                    if (error != null) {
+                        Log.e("로그인", "로그인 실패 $error")
+                        // 사용자가 취소
+                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled ) {
+                            return@loginWithKakaoAccount
+                        }
+                        // 다른 오류
+                        else {
+                            UserApiClient.instance.loginWithKakaoAccount(this, callback = mCallback)
+                        }
+                    }
+                    // 로그인 성공 부분
+                    else if (token != null) {
+                        Log.e("로그인", "로그인 성공 ${token.accessToken}")
+                        makeToast(token.accessToken)
+                    }
+                }
             }
         }
     }
@@ -69,61 +86,87 @@ class LoginActivity : AppCompatActivity() {
         // 필요에 따라 이 메서드를 삭제할 수 있습니다.
     }
 
-    private fun setKakaoCallback() {
-        kakaoCallback = { token, error ->
-            if (error != null) {
-                when (error.toString()) {
-                    AuthErrorCause.AccessDenied.toString() -> {
-                        Log.d("[카카오로그인]", "접근이 거부 됨(동의 취소)")
-                    }
-                    AuthErrorCause.InvalidClient.toString() -> {
-                        Log.d("[카카오로그인]", "유효하지 않은 앱")
-                    }
-                    AuthErrorCause.InvalidGrant.toString() -> {
-                        Log.d("[카카오로그인]", "인증 수단이 유효하지 않아 인증할 수 없는 상태")
-                    }
-                    AuthErrorCause.InvalidRequest.toString() -> {
-                        Log.d("[카카오로그인]", "요청 파라미터 오류")
-                    }
-                    AuthErrorCause.InvalidScope.toString() -> {
-                        Log.d("[카카오로그인]", "유효하지 않은 scope ID")
-                    }
-                    AuthErrorCause.Misconfigured.toString() -> {
-                        Log.d("[카카오로그인]", "설정이 올바르지 않음(android key hash)")
-                    }
-                    AuthErrorCause.ServerError.toString() -> {
-                        Log.d("[카카오로그인]", "서버 내부 에러")
-                    }
-                    AuthErrorCause.Unauthorized.toString() -> {
-                        Log.d("[카카오로그인]", "앱이 요청 권한이 없음")
-                    }
-                    else -> {
-                        Log.d("[카카오로그인]", "기타 에러")
-                    }
-                }
-            } else if (token != null) {
-                Log.d("[카카오로그인]", "로그인에 성공하였습니다.\n${token.accessToken}")
-                UserApiClient.instance.accessTokenInfo { tokenInfo, tokenInfoError ->
-                    if (tokenInfoError != null) {
-                        Log.d("[카카오로그인]", "토큰 정보 조회 실패: ${tokenInfoError}")
-                    } else if (tokenInfo != null) {
-                        UserApiClient.instance.me { user, userError ->
-                            if (userError != null) {
-                                Log.d("[카카오로그인]", "사용자 정보 요청 실패: $userError")
-                            } else if (user != null) {
-                                Log.d("[카카오로그인]", "사용자 정보: ${user.kakaoAccount?.profile?.nickname}")
+    private fun makeToast(accessToken: String){
+        UserApiClient.instance.me { user, error ->
+            Log.e("로그인", "닉네임 ${user?.kakaoAccount?.profile?.nickname}")
+            Log.e("로그인", "이메일 ${user?.kakaoAccount?.email}")
+            name = user?.kakaoAccount?.profile?.nickname.toString()
+            Toast.makeText(
+                this,
+                "${user?.kakaoAccount?.profile?.nickname}님 환영합니다.",
+                Toast.LENGTH_SHORT
+            ).show()
+            postLoginInfo(accessToken)
+        }
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
-                                // 메인 화면으로 이동
-                                val intent = Intent(this, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                        }
-                    }
+    private val mCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            when {
+                error.toString() == AuthErrorCause.AccessDenied.toString() -> {
+                    Toast.makeText(this, "접근이 거부 됨(동의 취소)", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Log.d("카카오로그인", "토큰==null error==null")
+                error.toString() == AuthErrorCause.InvalidClient.toString() -> {
+                    Toast.makeText(this, "유효하지 않은 앱", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.InvalidGrant.toString() -> {
+                    Toast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.InvalidRequest.toString() -> {
+                    Toast.makeText(this, "요청 파라미터 오류", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.InvalidScope.toString() -> {
+                    Toast.makeText(this, "유효하지 않은 scope ID", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.Misconfigured.toString() -> {
+                    Toast.makeText(this, "설정이 올바르지 않음(android key hash)", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.ServerError.toString() -> {
+                    Toast.makeText(this, "서버 내부 에러", Toast.LENGTH_SHORT).show()
+                }
+                error.toString() == AuthErrorCause.Unauthorized.toString() -> {
+                    Toast.makeText(this, "앱이 요청 권한이 없음", Toast.LENGTH_SHORT).show()
+                }
+                else -> { // Unknown
+                    Toast.makeText(this, "기타 에러", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+        else if (token != null) {
+            Log.e("로그인", "로그인 성공 ${token.accessToken}")
+            makeToast(token.accessToken)
+        }
     }
+
+    private fun postLoginInfo(accessToken: String) {
+        var loginJson = LoginRequest(name, accessToken)
+
+        // 네트워크 요청 및 응답 처리
+        LoginService.retrofitPostLogin(loginJson)
+            .enqueue(object : Callback<LoginResponse> { // 응답 타입을 String으로 지정
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseData = response.body()
+                        val userId = responseData?.user?.userId
+                        saveUserIdToSharedPreferences(applicationContext, userId)
+                        println("로그인 성공: $responseData")
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        println("로그인 실패: $errorBody")
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.e("POST ERROR", "실패원인: $t")
+                }
+            })
+    }
+
+
 }
