@@ -20,6 +20,7 @@
         android:value="@string/kakao_app_key" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:name=".utility.GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -70,6 +71,14 @@
 
         <activity
             android:name=".ReviewCreateActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ChatRoomCreateActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ChatActivity"
             android:exported="true" />
     </application>
 </manifest>
