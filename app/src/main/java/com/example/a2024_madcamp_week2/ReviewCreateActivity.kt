@@ -18,6 +18,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.a2024_madcamp_week2.api.ApiClient
 import com.example.a2024_madcamp_week2.api.ReviewService
 import com.example.a2024_madcamp_week2.databinding.ActivityReviewCreateBinding
@@ -31,6 +34,12 @@ import retrofit2.Response
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
+
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
+import com.example.a2024_madcamp_week2.ui.notifications.NotificationsFragment
+
+
 
 class ReviewCreateActivity : AppCompatActivity() {
     private lateinit var binding: ActivityReviewCreateBinding
@@ -84,6 +93,13 @@ class ReviewCreateActivity : AppCompatActivity() {
         binding.buttonSubmitReview.setOnClickListener {
             postReportFun()
             Toast.makeText(applicationContext, "요청이 접수되었습니다", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
+        // 뒤로가기 버튼
+        binding.buttonBack.setOnClickListener {
+            // NotificationsFragment로 전환
+            //replaceFragment(NotificationsFragment())
             finish()
         }
     }
@@ -226,5 +242,24 @@ class ReviewCreateActivity : AppCompatActivity() {
             filePath = it.getString(columnIndex)
         }
         return filePath
+    }
+
+    // 터치 이벤트를 통해 키보드 숨기기
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val view = currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    // 프래그먼트 교체 함수
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 }

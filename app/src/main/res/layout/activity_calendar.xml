@@ -34,7 +34,7 @@
     <EditText
         android:id="@+id/contextEditText"
         android:layout_width="0dp"
-        android:layout_height="116dp"
+        android:layout_height="72dp"
         android:inputType="textMultiLine"
         android:ems="10"
         app:layout_constraintTop_toBottomOf="@+id/diaryTextView" android:layout_marginTop="16dp"
@@ -121,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@id/deleteBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
