@@ -11,6 +11,7 @@ import com.example.a2024_madcamp_week2.databinding.FragmentMypageBinding
 import android.widget.Button
 import com.example.a2024_madcamp_week2.LogoutActivity
 import android.content.Intent
+import com.example.a2024_madcamp_week2.CalendarActivity
 
 
 class MypageFragment : Fragment() {
@@ -42,6 +43,13 @@ class MypageFragment : Fragment() {
             val intent = Intent(activity, LogoutActivity::class.java)
             startActivity(intent)
         }
+
+        val calendarButton: Button = binding.calendarButton
+        calendarButton.setOnClickListener {
+            val intent = Intent(activity, CalendarActivity::class.java)
+            startActivity(intent)
+        }
+
         return root
     }
 
