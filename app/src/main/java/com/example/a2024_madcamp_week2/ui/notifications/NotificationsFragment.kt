@@ -98,9 +98,9 @@ class NotificationsFragment : Fragment() {
         //    }
         // })
 
-        val reportImageLinearLayoutManager = LinearLayoutManager(requireContext())
-        reportImageLinearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        binding.rvReview.layoutManager = reportImageLinearLayoutManager
+        val reviewImageLinearLayoutManager = LinearLayoutManager(requireContext())
+        reviewImageLinearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        binding.rvReview.layoutManager = reviewImageLinearLayoutManager
         binding.rvReview.adapter = reviewAdapter
     }
 }
