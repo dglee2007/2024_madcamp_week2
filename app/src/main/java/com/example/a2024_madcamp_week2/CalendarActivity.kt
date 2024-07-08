@@ -135,7 +135,7 @@ class CalendarActivity : AppCompatActivity() {
                 saveBtn.visibility = View.VISIBLE
                 updateBtn.visibility = View.INVISIBLE
                 deleteBtn.visibility = View.INVISIBLE
-                diaryContent.text = contextEditText.text
+                //diaryContent.text = contextEditText.text
             }
             deleteBtn.setOnClickListener {
                 diaryContent.visibility = View.INVISIBLE
