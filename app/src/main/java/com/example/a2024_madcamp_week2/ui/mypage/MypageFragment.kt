@@ -1,6 +1,7 @@
 package com.example.a2024_madcamp_week2.ui.mypage
 
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -13,6 +14,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.a2024_madcamp_week2.LogoutActivity
 import com.example.a2024_madcamp_week2.R
 import com.example.a2024_madcamp_week2.api.PlanResponse
 import com.example.a2024_madcamp_week2.api.PlanService
@@ -52,6 +54,12 @@ class MypageFragment : Fragment() {
         // 데이터 가져오기
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             getMyPlans()
+        }
+
+        val logoutButton: ImageView = view.findViewById(R.id.logout_button)
+        logoutButton.setOnClickListener {
+            val intent = Intent(activity, LogoutActivity::class.java)
+            startActivity(intent)
         }
 
         return view
