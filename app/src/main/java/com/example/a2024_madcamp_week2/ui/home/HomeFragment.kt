@@ -1,15 +1,20 @@
 package com.example.a2024_madcamp_week2.ui.home
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.a2024_madcamp_week2.ChatRoomCreateActivity
+import com.example.a2024_madcamp_week2.ClosingSoonConcertMoreActivity
+import com.example.a2024_madcamp_week2.HotConcertMoreActivity
 import com.example.a2024_madcamp_week2.R
 import com.example.a2024_madcamp_week2.adapter.BannerAdapter
 import com.example.a2024_madcamp_week2.adapter.ClosingSoonConcertAdapter
@@ -51,6 +56,16 @@ class HomeFragment : Fragment() {
             setupHotRecyclerView() // getAllReviews가 완료된 후에 RecyclerView 설정
             getClosingSoonConcerts()
             setupClosingSoonRecyclerView()
+        }
+
+        binding!!.btnHotConcertMore.setOnClickListener {
+            val intent = Intent(requireContext(), HotConcertMoreActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding!!.btnClosingSoonConcertMore.setOnClickListener {
+            val intent = Intent(requireContext(), ClosingSoonConcertMoreActivity::class.java)
+            startActivity(intent)
         }
 
         return binding?.root
