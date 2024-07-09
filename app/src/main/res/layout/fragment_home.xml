@@ -35,9 +35,12 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btn_hot_concert_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="더보기" />
+                android:background="@drawable/background_round_button"
+                android:text="더보기"
+                android:textColor="@android:color/white"/>
         </LinearLayout>
 
         <!-- 요즘 HOT 리사이클러뷰 -->
@@ -69,9 +72,12 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/btn_closing_soon_concert_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="더보기" />
+                android:background="@drawable/background_round_button"
+                android:text="더보기"
+                android:textColor="@android:color/white"/>
         </LinearLayout>
 
         <!-- 임박 마감 리사이클러뷰 -->
