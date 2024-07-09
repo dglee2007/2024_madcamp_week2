@@ -2,6 +2,12 @@ package com.example.a2024_madcamp_week2.api
 
 import com.google.gson.annotations.SerializedName
 
+data class ChatRoomRequest(
+    val title: String,
+    val content: String,
+    val count: Int
+)
+
 data class ChatRoomResponse(
     @SerializedName("chat_room_id") val chatRoomId: Int,
     @SerializedName("title") val title: String,

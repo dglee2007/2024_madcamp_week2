@@ -1,5 +1,6 @@
 package com.example.a2024_madcamp_week2.ui.notifications
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +33,8 @@ class NotificationsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var reviewList: ArrayList<ReviewResponse>
     private lateinit var reviewAdapter: ReviewAdapter
+    private lateinit var createReviewLauncher: ActivityResultLauncher<Intent>
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,9 +53,23 @@ class NotificationsFragment : Fragment() {
 //            textView.text = it
 //        }
 
+        createReviewLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("INFO", "조건통과")
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    getAllReviews()
+                    reviewAdapter.notifyDataSetChanged()
+                }
+            } else {
+                Log.d("INFO", "실패 또는 취소")
+            }
+        }
+
         binding.btnCreateReview.setOnClickListener {
             val intent = Intent(requireContext(), ReviewCreateActivity::class.java)
-            startActivity(intent)
+            createReviewLauncher.launch(intent)
         }
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {

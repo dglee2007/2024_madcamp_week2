@@ -1,6 +1,7 @@
 package com.example.a2024_madcamp_week2
 
 import android.Manifest.permission.CAMERA
+import android.app.Activity
 import android.content.ClipData
 import android.content.ContentValues
 import android.content.Context
@@ -221,13 +222,20 @@ class ReviewCreateActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val responseData = response.body()
                     Log.d("리뷰 등록 성공: ", responseData.toString())
+                    val intent = Intent()
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("리뷰 등록 실패: ", errorBody.toString())
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
                 }
             }
             override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.e("TAG", "실패원인: $t")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
             }
         })
     }

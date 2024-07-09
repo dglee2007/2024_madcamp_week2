@@ -3,6 +3,8 @@ package com.example.a2024_madcamp_week2.api
 import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -12,9 +14,7 @@ import retrofit2.http.Path
 interface ChatService {
     @POST("chat/room/create/{user_id}") // Replace with your API endpoint
     fun postChatRoom(
-        @Part("title") title: String,
-        @Part("content") content: String,
-        @Part("count") count: Int,
+        @Body chatRoomRequest: ChatRoomRequest,
         @Path("user_id") userId: Int
     ): Call<ChatRoomResponse>
 
