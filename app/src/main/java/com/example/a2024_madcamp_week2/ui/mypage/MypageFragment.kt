@@ -1,60 +1,53 @@
 package com.example.a2024_madcamp_week2.ui.mypage
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.a2024_madcamp_week2.databinding.FragmentMypageBinding
-import android.widget.Button
-import com.example.a2024_madcamp_week2.LogoutActivity
-import android.content.Intent
-import com.example.a2024_madcamp_week2.CalendarActivity
-
+import com.example.a2024_madcamp_week2.R
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 
 class MypageFragment : Fragment() {
 
-    private var _binding: FragmentMypageBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var calendarView: MaterialCalendarView
+    private val events = mutableSetOf<CalendarDay>() // 일정이 있는 날짜를 저장하는 Set
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val mypageViewModel =
-            ViewModelProvider(this).get(MypageViewModel::class.java)
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_mypage, container, false)
 
-        _binding = FragmentMypageBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        calendarView = view.findViewById(R.id.calendarView)
 
-        val textView: TextView = binding.textMypage
-        mypageViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        // 예시로 일정 데이터를 설정합니다.
+        events.add(CalendarDay.today()) // 오늘 날짜에 일정이 있는 경우
+
+        // CalendarView에 Decorator 추가하여 일정이 있는 날짜에 점을 표시합니다.
+        calendarView.addDecorator(EventDecorator(Color.RED, events))
+
+        calendarView.setOnDateChangedListener { widget, date, selected ->
+            // 날짜를 클릭했을 때 할 일을 여기에 작성합니다.
         }
 
-        val logoutButton: Button = binding.logoutButton
-        logoutButton.setOnClickListener {
-            val intent = Intent(activity, LogoutActivity::class.java)
-            startActivity(intent)
-        }
-
-        val calendarButton: Button = binding.calendarButton
-        calendarButton.setOnClickListener {
-            val intent = Intent(activity, CalendarActivity::class.java)
-            startActivity(intent)
-        }
-
-        return root
+        return view
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    // 날짜에 점을 찍어서 일정이 있는 날을 표시하는 Decorator 클래스
+    private class EventDecorator(private val color: Int, private val dates: Set<CalendarDay>) :
+        com.prolificinteractive.materialcalendarview.DayViewDecorator {
+
+        override fun shouldDecorate(day: CalendarDay): Boolean {
+            return dates.contains(day)
+        }
+
+        override fun decorate(view: com.prolificinteractive.materialcalendarview.DayViewFacade) {
+            view.addSpan(DotSpan(5F, color)) // 날짜 아래에 점을 표시합니다.
+        }
     }
 }
