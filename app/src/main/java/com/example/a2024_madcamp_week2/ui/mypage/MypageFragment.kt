@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,18 +34,13 @@ class MypageFragment : Fragment() {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textMypage
-        mypageViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-
-        val logoutButton: Button = binding.logoutButton
+        val logoutButton: ImageView = binding.logoutButton
         logoutButton.setOnClickListener {
             val intent = Intent(activity, LogoutActivity::class.java)
             startActivity(intent)
         }
 
-        val calendarButton: Button = binding.calendarButton
+        val calendarButton: ImageView = binding.calendarButton
         calendarButton.setOnClickListener {
             val intent = Intent(activity, CalendarActivity::class.java)
             startActivity(intent)
