@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.a2024_madcamp_week2.api.ApiClient
 import com.example.a2024_madcamp_week2.databinding.ActivityChatBinding
 import com.example.a2024_madcamp_week2.databinding.ActivityMainBinding
 import io.socket.client.IO
@@ -53,7 +54,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun connect() {
         try {
-            mSocket = IO.socket("http://143.248.226.14:3000")
+            mSocket = IO.socket(ApiClient.BASE_URL)
             mSocket!!.connect()
 
             Log.d("SOCKET", "Connection success : " + mSocket?.id())
