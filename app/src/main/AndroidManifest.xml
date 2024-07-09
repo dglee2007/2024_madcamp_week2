@@ -80,5 +80,13 @@
         <activity
             android:name=".ChatActivity"
             android:exported="true" />
+
+        <activity
+            android:name=".HotConcertMoreActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ClosingSoonConcertMoreActivity"
+            android:exported="true" />
     </application>
 </manifest>
