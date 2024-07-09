@@ -1,5 +1,6 @@
 package com.example.a2024_madcamp_week2.ui.dashboard
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,11 +33,11 @@ class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
     private lateinit var chatRoomList: ArrayList<ChatRoomResponse>
     private lateinit var chatRoomAdapter: ChatRoomAdapter
+    private lateinit var createChatRoomLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,13 +52,23 @@ class DashboardFragment : Fragment() {
 
         chatRoomList = ArrayList() // reviewList 초기화
 
-//        dashboardViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
+        createChatRoomLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Log.d("INFO", "조건통과")
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    getAllChatRooms()
+                    chatRoomAdapter.notifyDataSetChanged()
+                }
+            } else {
+                Log.d("INFO", "실패 또는 취소")
+            }
+        }
 
         binding.btnCreateChatRoom.setOnClickListener {
             val intent = Intent(requireContext(), ChatRoomCreateActivity::class.java)
-            startActivity(intent)
+            createChatRoomLauncher.launch(intent)  // startActivity 대신 launch 사용
         }
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -73,11 +86,11 @@ class DashboardFragment : Fragment() {
 
     private suspend fun getAllChatRooms() {
         withContext(Dispatchers.IO) {
-            // var email=binding.etSignupEmailleft.text.toString()+binding.etSignupEmailright.text.toString()
             val response = ChatService.retrofitGetAllChatRooms().execute()
             if (response.isSuccessful) {
                 val chatRooms = response.body()
                 if (chatRooms != null) {
+                    chatRoomList.clear()  // Clear the list to avoid duplicates
                     for (chatRoom in chatRooms) {
                         val chatRoomId = chatRoom.chatRoomId
                         val title = chatRoom.title
@@ -98,10 +111,6 @@ class DashboardFragment : Fragment() {
     private fun setupRecyclerView() {
         chatRoomAdapter = ChatRoomAdapter(chatRoomList)
         Log.d("chatRoomList", chatRoomList.toString())
-        // reviewAdapter.setOnItemClickListener(object : ReportImageRVAdapter.OnItemClickListener {
-        //    override fun onItemClick(pos: Int) {
-        //    }
-        // })
 
         val chatRoomLinearLayoutManager = LinearLayoutManager(requireContext())
         chatRoomLinearLayoutManager.orientation = LinearLayoutManager.VERTICAL
