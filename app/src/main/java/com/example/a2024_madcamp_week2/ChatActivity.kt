@@ -2,6 +2,7 @@ package com.example.a2024_madcamp_week2
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -123,26 +124,29 @@ class ChatActivity : AppCompatActivity() {
 
     private fun displayMessage(sender: String, message: String) {
         val messageView = TextView(this)
-        messageView.text = "$sender: $message"
+        messageView.text = message
+        messageView.setPadding(16, 16, 16, 16) // 패딩 추가
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        params.setMargins(16, 8, 16, 8)
+        params.setMargins(32, 16, 32, 16)  // margin 값을 더 크게 설정
 
         // 사용자가 보낸 메시지와 다른 사람이 보낸 메시지를 구분하여 텍스트뷰 정렬
         if (sender == mSocket!!.id()) {
-            // 사용자가 보낸 메시지 (왼쪽 정렬)
-            //messageView.setBackgroundResource(R.drawable.bg_chat_user)
+            // 사용자가 보낸 메시지 (오른쪽 정렬)
+            messageView.setBackgroundResource(R.drawable.bg_chat_message_sent)
             params.marginStart = 64
-            params.marginEnd = 16
-            messageView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+            params.marginEnd = 32  // margin 값을 더 크게 설정
+            params.gravity = Gravity.END
+            messageView.textAlignment = View.TEXT_ALIGNMENT_VIEW_END
         } else {
-            // 다른 사람이 보낸 메시지 (오른쪽 정렬)
-           // messageView.setBackgroundResource(R.drawable.bg_chat_other)
-            params.marginStart = 16
+            // 다른 사람이 보낸 메시지 (왼쪽 정렬)
+            messageView.setBackgroundResource(R.drawable.bg_chat_message_received)
+            params.marginStart = 32  // margin 값을 더 크게 설정
             params.marginEnd = 64
-            messageView.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+            params.gravity = Gravity.START
+            messageView.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
         }
 
         messageView.layoutParams = params

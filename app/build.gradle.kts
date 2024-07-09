@@ -79,4 +79,5 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("io.socket:socket.io-client:2.0.0")
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
 }
