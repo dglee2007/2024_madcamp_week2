@@ -166,6 +166,7 @@ class ReviewCreateActivity : AppCompatActivity() {
         when (requestCode) {
             REQUEST_CAMERA -> run {
                 imageUrl = photoURI
+                binding.imageViewReview.setImageURI(imageUrl)
             }
             REQUEST_GALLERY -> {
                 if (resultCode == RESULT_OK) {
