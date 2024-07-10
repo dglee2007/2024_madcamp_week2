@@ -3,8 +3,12 @@ package com.example.a2024_madcamp_week2
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+
 import android.util.Base64
 import android.util.Log
+import android.view.View
+
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.navigation.findNavController
@@ -43,9 +47,19 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else if (tokenInfo != null) {
+                //로딩 창 보여주기
+                showLoadingScreen()
+
                 setupNavigation()
+
+                // 지연 후 로딩 창 감추기
+                Handler().postDelayed({
+                    hideLoadingScreen()
+                }, 1000)
             }
         }
+
+
 
         val keyHash = Utility.getKeyHash(this)
         Log.d("Hash", keyHash)
@@ -95,5 +109,13 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("KeyHash", "Error while getting hash key", e)
         }
+    }
+
+    private fun showLoadingScreen() {
+        binding.loadingLayout.visibility = View.VISIBLE
+    }
+
+    private fun hideLoadingScreen() {
+        binding.loadingLayout.visibility = View.GONE
     }
 }
