@@ -35,6 +35,11 @@ interface ReviewService {
         @Path("userId") userId: String
     ): Call<List<ReviewResponse>>
 
+    @GET("review/keyword/{keyword}")
+    fun getReviewsByKeyword(
+        @Path("keyword") keyword: String
+    ): Call<List<ReviewResponse>>
+
     companion object {
         fun create(): ReviewService {
             return ApiClient.create(ReviewService::class.java)
@@ -50,6 +55,10 @@ interface ReviewService {
 
         fun retrofitGetMyReviews(userId: String): Call<List<ReviewResponse>> {
             return ApiClient.create(ReviewService::class.java).getMyReviews(userId)
+        }
+
+        fun retrofitGetReviewsByKeyword(keyword: String): Call<List<ReviewResponse>> {
+            return ApiClient.create(ReviewService::class.java).getReviewsByKeyword(keyword)
         }
     }
 }

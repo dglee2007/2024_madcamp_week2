@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -71,6 +72,17 @@ class DashboardFragment : Fragment() {
             createChatRoomLauncher.launch(intent)  // startActivity 대신 launch 사용
         }
 
+        binding.btnSearch.setOnClickListener {
+            val searchText = binding.etSearch.text.toString().trim()
+            if (searchText.isNotEmpty()) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    searchChatRooms(searchText)
+                }
+            } else {
+                Toast.makeText(requireContext(), "검색어를 입력하세요", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
             getAllChatRooms()
             setupRecyclerView() // getAllReviews가 완료된 후에 RecyclerView 설정
@@ -117,4 +129,36 @@ class DashboardFragment : Fragment() {
         binding.rvChatRoom.layoutManager = chatRoomLinearLayoutManager
         binding.rvChatRoom.adapter = chatRoomAdapter
     }
+
+    private suspend fun searchChatRooms(keyword: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = ChatService.retrofitGetChatRoomsByKeyword(keyword).execute()
+                if (response.isSuccessful) {
+                    val chatRooms = response.body()
+                    if (chatRooms != null) {
+                        chatRoomList.clear()
+                        for (chatRoom in chatRooms) {
+                            val chatRoomId = chatRoom.chatRoomId
+                            val title = chatRoom.title
+                            val content = chatRoom.content
+                            val count = chatRoom.count
+                            val createdAt = chatRoom.createdAt
+                            val name = chatRoom.name
+                            chatRoomList.add(ChatRoomResponse(chatRoomId = chatRoomId, title=title, content=content, count = count, createdAt=createdAt, name=name))
+                        }
+                    }
+                    withContext(Dispatchers.Main) {
+                        chatRoomAdapter.notifyDataSetChanged()
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("INFO", "Error: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("INFO", "Exception: ${e.message}")
+            }
+        }
+    }
+
 }
