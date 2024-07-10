@@ -28,6 +28,11 @@ interface ChatService {
         @Path("userId") userId: String
     ): Call<List<ChatRoomResponse>>
 
+    @GET("chat/room/keyword/{keyword}")
+    fun getChatRoomsByKeyword(
+        @Path("keyword") keyword: String
+    ): Call<List<ChatRoomResponse>>
+
     companion object {
         fun create(): ReviewService {
             return ApiClient.create(ReviewService::class.java)
@@ -39,6 +44,10 @@ interface ChatService {
 
         fun retrofitGetMyChatRooms(userId: String): Call<List<ChatRoomResponse>> {
             return ApiClient.create(ChatService::class.java).getMyChatRooms(userId)
+        }
+
+        fun retrofitGetChatRoomsByKeyword(keyword: String): Call<List<ChatRoomResponse>> {
+            return ApiClient.create(ChatService::class.java).getChatRoomsByKeyword(keyword)
         }
     }
 }

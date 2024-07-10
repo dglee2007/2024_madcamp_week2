@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -56,20 +57,28 @@ class NotificationsFragment : Fragment() {
         createReviewLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                Log.d("INFO", "조건통과")
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    getAllReviews()
-                    reviewAdapter.notifyDataSetChanged()
-                }
-            } else {
-                Log.d("INFO", "실패 또는 취소")
+            Log.d("INFO", "ActivityResult callback 호출, resultCode: ${result.resultCode}")
+            // resultCode와 상관없이 새로고침
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                getAllReviews()
+                reviewAdapter.notifyDataSetChanged()
             }
         }
 
         binding.btnCreateReview.setOnClickListener {
             val intent = Intent(requireContext(), ReviewCreateActivity::class.java)
             createReviewLauncher.launch(intent)
+        }
+
+        binding.btnSearch.setOnClickListener {
+            val searchText = binding.etSearch.text.toString().trim()
+            if (searchText.isNotEmpty()) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    searchReviews(searchText)
+                }
+            } else {
+                Toast.makeText(requireContext(), "검색어를 입력하세요", Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -92,6 +101,7 @@ class NotificationsFragment : Fragment() {
             if (response.isSuccessful) {
                 val reviews = response.body()
                 if (reviews != null) {
+                    reviewList.clear()  // Clear the list to avoid duplicates
                     for (review in reviews) {
                         val imgPart = ApiClient.BASE_URL + review.image.replace("\\", "/")
                         val title = review.title
@@ -122,4 +132,36 @@ class NotificationsFragment : Fragment() {
         binding.rvReview.layoutManager = reviewImageLinearLayoutManager
         binding.rvReview.adapter = reviewAdapter
     }
+
+    private suspend fun searchReviews(keyword: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = ReviewService.retrofitGetReviewsByKeyword(keyword).execute()
+                if (response.isSuccessful) {
+                    val reviews = response.body()
+                    if (reviews != null) {
+                        reviewList.clear()
+                        for (review in reviews) {
+                            val imgPart = ApiClient.BASE_URL + review.image.replace("\\", "/")
+                            val title = review.title
+                            val content = review.content
+                            val rating = review.rating
+                            val createdAt = review.createdAt
+                            val name = review.name
+                            reviewList.add(ReviewResponse(image = imgPart, title = title, content = content, rating = rating, createdAt = createdAt, name = name))
+                        }
+                    }
+                    withContext(Dispatchers.Main) {
+                        reviewAdapter.notifyDataSetChanged()
+                    }
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("NotificationsFragment", "Error: $errorBody")
+                }
+            } catch (e: Exception) {
+                Log.e("NotificationsFragment", "Exception: ${e.message}")
+            }
+        }
+    }
+
 }
