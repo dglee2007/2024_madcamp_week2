@@ -80,4 +80,5 @@ dependencies {
 
     implementation("io.socket:socket.io-client:2.0.0")
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
+    implementation("com.kakao.maps.open:android:2.9.5")
 }
