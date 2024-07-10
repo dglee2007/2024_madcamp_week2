@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">2024_madcamp_week2</string>
+    <string name="app_name">Concert Planner</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Chat</string>
     <string name="title_notifications">Review</string>
-    <string name="title_mypage">My Page</string>
+    <string name="title_mypage">Schedule</string>
     <string name="kakao_app_key">b0fce2ef6cde839710cbaff0835b2c44</string>
     <string name="nickname_text">닉네임: %1$s</string>
     <string name="kakao_login_button_description">카카오 로그인 버튼</string>
