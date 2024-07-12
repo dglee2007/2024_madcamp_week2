@@ -17,7 +17,7 @@ Concert Planner는 공연에 관심 있는 사람들끼리 정보를 공유하�
 -   IDE: Android Studio
 
 **BE**
-
+참고 : https://github.com/lucy1287/madcamp_week2
 -   클라우드: AWS EC2
 -   서버: Node.js
 -   DB: MySQL RDS
